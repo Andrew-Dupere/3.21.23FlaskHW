@@ -1,6 +1,7 @@
-from app import app
+from app import app, db
 from flask import render_template, redirect, url_for, flash
 from app.forms import SignUpForm
+from app.models import User
 
 @app.route('/', methods = ["GET","POST"])
 def base():       
@@ -27,7 +28,12 @@ def signup():
         phone = form.phone.data
         address = form.address.data
         print(f'first: {first_name} last: {last_name} phone: {phone} address {address}')
-        flash(f"Sign up was a Success!")
-        return redirect(url_for('home'))
+        check_user = db.session.execute(db.select(User).filter((User.phone == phone))).scalars().all()
+        if check_user:
+            flash('That number already exists in our databse')
+            return redirect(url_for('home'))
+        new_user = User(first_name = first_name, last_name = last_name, phone = phone, address = address)
+        flash('Thank you for adding your number to the matrix')
+        return redirect(url_for('home'))   
     
     return render_template('signup.html', form = form)

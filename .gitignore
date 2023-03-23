@@ -1,9 +1,7 @@
 __pycache__/
 
-flashw2
-
-bin
- 
-scripts
-
 flaskhw2
+
+app.db
+
+.env
